@@ -28,6 +28,7 @@
   #bg{position:fixed;inset:0;z-index:0;transition:background .6s ease}
   .bg0,.bg3{background:var(--pink)} .bg1,.bg7{background:var(--lemon)} .bg2{background:var(--cream)}
   .bg4,.bg8{background:var(--pink2)} .bg5{background:var(--pink-lt)} .bg6{background:#170309} .bg9{background:#0a0006}
+  .bg10{background:radial-gradient(120% 90% at 50% 22%,#F73AAE 0%,var(--pink) 48%,var(--pink2) 100%)}
   /* subtle static brand accents */
   .corner{position:fixed;z-index:2;opacity:.5;pointer-events:none}
   .cBall{left:26px;bottom:9.5vh;width:84px}
@@ -115,6 +116,21 @@
   @keyframes gjit{0%{transform:translate(0)}50%{transform:translate(.4px,-.4px)}100%{transform:translate(-.3px,.3px)}}
   @keyframes gsh1{0%{clip-path:inset(0 0 82% 0);transform:translateX(-6px)}50%{clip-path:inset(46% 0 30% 0);transform:translateX(5px)}100%{clip-path:inset(78% 0 4% 0);transform:translateX(-4px)}}
   @keyframes gsh2{0%{clip-path:inset(70% 0 8% 0);transform:translateX(6px)}50%{clip-path:inset(20% 0 56% 0);transform:translateX(-5px)}100%{clip-path:inset(4% 0 80% 0);transform:translateX(4px)}}
+
+  /* ===== TRUCK SLIDE (c10) ===== */
+  .c10 .truckslide{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:6vh}
+  .c10 .tline{font-family:var(--cond);color:var(--lemon);font-size:6.6vh;letter-spacing:.02em;text-transform:uppercase;
+    text-align:center;line-height:.95;min-height:12.5vh;padding:0 6vw;
+    text-shadow:3px 4px 0 var(--plum);animation:tlinein .5s cubic-bezier(.2,1.5,.35,1) both}
+  .c10 .bigwm{height:17.5vh;margin-top:.2vh;filter:drop-shadow(5px 7px 0 rgba(42,10,30,.42));
+    animation:wmpin .6s cubic-bezier(.2,1.5,.35,1) both}
+  .c10 .truckwrap{position:absolute;left:0;right:0;bottom:7.6vh;display:flex;justify-content:center;
+    animation:drivein 1.05s cubic-bezier(.18,.85,.2,1) both}
+  .c10 .truckimg{height:45vh;filter:drop-shadow(0 16px 26px rgba(42,10,30,.4));animation:bobtruck 3.6s ease-in-out infinite}
+  @keyframes tlinein{0%{transform:translateY(-26px) scale(.82);opacity:0}100%{transform:none;opacity:1}}
+  @keyframes wmpin{0%{transform:scale(.55) rotate(-5deg);opacity:0}100%{transform:none;opacity:1}}
+  @keyframes drivein{0%{transform:translateX(-118vw)}100%{transform:translateX(0)}}
+  @keyframes bobtruck{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
 </style>
 </head>
 <body>
@@ -125,7 +141,7 @@
 <svg class="corner cLem" viewBox="0 0 80 70"><path d="M58 14 q14-9 22-3 q-7 12-22 9z" fill="#5FB85A"/><ellipse cx="40" cy="42" rx="30" ry="24" fill="#FCD94A" stroke="#E8B400" stroke-width="2.5"/><ellipse cx="30" cy="34" rx="8" ry="5" fill="#FFF3B0" opacity=".7"/></svg>
 <div id="bg" class="bg0"></div>
 <div id="stage"></div>
-<div id="hud">1–0 concepts · ←/→ quote · space pause · F fullscreen</div>
+<div id="hud">1–0 + T truck · ←/→ quote · space pause · F fullscreen</div>
 <div id="foot"><div class="run"></div></div>
 
 <div id="intro">
@@ -190,7 +206,8 @@ const QUOTES=[
  {q:"Join the incredibly satisfied brigade.",by:"Moira A."}
 ];
 
-const NAMES=['Slam','Ticker','Split-flap','Lemon rain','Karaoke','Stickies','Neon','Ransom','Credits','Glitch'];
+const NAMES=['Slam','Ticker','Split-flap','Lemon rain','Karaoke','Stickies','Neon','Ransom','Credits','Glitch','Truck'];
+['truck-cut.png','nancy-cream.png'].forEach(s=>{const im=new Image();im.src=s;});
 const RANSOM=['#ED1E9C','#FCD94A','#fff','#2A0A1E','#C0117A'];
 const stage=document.getElementById('stage'),nameEl=document.getElementById('name');
 const rand=a=>a[Math.floor(Math.random()*a.length)];
@@ -216,6 +233,7 @@ const C=[
  ()=>cycle(it=>{stage.innerHTML=block(words(it.q).map(w=>{const fs=(.78+Math.random()*.8).toFixed(2);const rot=(Math.random()*14-7).toFixed(1);const bg=rand(RANSOM);const fg=(bg==='#FCD94A'||bg==='#fff')?'#2A0A1E':'#fff';return `<span class="w" style="font-size:${fs}em;transform:rotate(${rot}deg);background:${bg};color:${fg}">${esc(w)}</span>`;}).join(''),it.by);fitLen(fq(),it.q);},2900),
  ()=>{stage.innerHTML=`<div class="scroll">${QUOTES.map(it=>`<p>“${esc(it.q)}”<span class="cby">— ${esc(it.by)}</span></p>`).join('')}</div>`;return()=>{};},
  ()=>cycle(it=>{stage.innerHTML=`<div class="qb"><div class="q" data-t="“${esc(it.q)}”">“${esc(it.q)}”</div><div class="by">— ${esc(it.by)}</div></div>`;fitLen(fq(),it.q);},2900),
+ ()=>{const TT=['THE LOUDEST POP-UP IN LONDON','FIRST COME, FIRST SERVED','SAY IT LOUDER!','SHE COMES FIRST!','MILLIONS CAME. WILL YOU?','FREE TREATS · FREE MERCH','DON’T TELL YOUR NAN','WE DON’T DO QUIET','TAKES OVER REGENT’S PARK','PLEASURE, OUT LOUD'];let k=0;stage.innerHTML=`<div class="truckslide"><div class="tline">★ ${TT[0]} ★</div><img class="bigwm" src="nancy-cream.png" alt="Nancy"><div class="truckwrap"><img class="truckimg" src="truck-cut.png" alt="Nancy truck"></div></div>`;const tl=stage.querySelector('.tline');const id=setInterval(()=>{k=(k+1)%TT.length;tl.style.animation='none';void tl.offsetWidth;tl.style.animation='';tl.textContent='★ '+TT[k]+' ★';},2300);return()=>clearInterval(id);},
 ];
 
 function show(i){if(cleanup)cleanup();cur=(i+C.length)%C.length;stage.className='';void stage.offsetWidth;stage.className='c'+cur;document.getElementById('bg').className='bg'+cur;stage.innerHTML='';nameEl.textContent=(cur+1<10?'0':'')+(cur+1)+' · '+NAMES[cur];cleanup=C[cur]();}
@@ -227,6 +245,7 @@ document.addEventListener('keydown',e=>{
   else if(e.key==='ArrowRight'){qi=(qi+1)%QUOTES.length;show(cur);startAuto();}
   else if(e.key==='ArrowLeft'){qi=(qi-2+QUOTES.length)%QUOTES.length;show(cur);startAuto();}
   else if(e.key===' '){paused=!paused;e.preventDefault();}
+  else if(e.key.toLowerCase()==='t'){show(10);startAuto();}
   else if(e.key.toLowerCase()==='f'){if(!document.fullscreenElement)document.documentElement.requestFullscreen();else document.exitFullscreen();}
 });
 let idle;function wake(){document.body.classList.remove('idle');clearTimeout(idle);idle=setTimeout(()=>document.body.classList.add('idle'),2500);}
