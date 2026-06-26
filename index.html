@@ -132,6 +132,14 @@
   @keyframes wmpin{0%{transform:scale(.55) rotate(-5deg);opacity:0}100%{transform:none;opacity:1}}
   @keyframes drivein{0%{transform:translateX(-118vw)}100%{transform:translateX(0)}}
   @keyframes bobtruck{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+
+  /* ===== CENTER ROTATING PIN (Nancy x Nick) ===== */
+  #pin{position:fixed;left:50%;top:10.5vh;height:25vh;transform:translateX(-50%);z-index:5;pointer-events:none;
+    filter:drop-shadow(0 10px 20px rgba(42,10,30,.45));animation:pinpop .6s cubic-bezier(.2,1.5,.35,1) both}
+  @keyframes pinpop{0%{transform:translateX(-50%) scale(.4) rotate(-14deg);opacity:0}100%{transform:translateX(-50%) scale(1) rotate(0);opacity:1}}
+  /* drop the quote into the lower half so it clears the pin (truck opts out) */
+  #stage{top:37vh}
+  #stage.c10{top:0}
 </style>
 </head>
 <body>
@@ -141,6 +149,7 @@
 <svg class="corner cBall" viewBox="0 0 100 100"><circle cx="50" cy="50" r="49" fill="#EF5BB0"/><path d="M6 36 Q50 14 94 36" fill="none" stroke="#FBEFD8" stroke-width="3.5" stroke-linecap="round"/><path d="M6 64 Q50 86 94 64" fill="none" stroke="#FBEFD8" stroke-width="3.5" stroke-linecap="round"/></svg>
 <svg class="corner cLem" viewBox="0 0 80 70"><path d="M58 14 q14-9 22-3 q-7 12-22 9z" fill="#5FB85A"/><ellipse cx="40" cy="42" rx="30" ry="24" fill="#FCD94A" stroke="#E8B400" stroke-width="2.5"/><ellipse cx="30" cy="34" rx="8" ry="5" fill="#FFF3B0" opacity=".7"/></svg>
 <div id="bg" class="bg10"></div>
+<img id="pin" src="pin-robe.png" alt="Nancy x Nick pin">
 <div id="stage"></div>
 <div id="hud">1–9 + T truck · ←/→ quote · space pause · F fullscreen</div>
 <div id="foot"><div class="run"></div></div>
@@ -200,7 +209,8 @@ const QUOTES=[
  {q:"Join the incredibly satisfied brigade.",by:"Moira A."}
 ];
 
-['truck-cut.png','nancy-cream.png'].forEach(s=>{const im=new Image();im.src=s;});
+const PINS=['pin-robe.png','pin-daisy.png','pin-crown.png'];
+['truck-cut.png','nancy-cream.png',...PINS].forEach(s=>{const im=new Image();im.src=s;});
 const RANSOM=['#ED1E9C','#FCD94A','#fff','#2A0A1E','#C0117A'];
 const stage=document.getElementById('stage'),nameEl=document.getElementById('name');
 const rand=a=>a[Math.floor(Math.random()*a.length)];
@@ -227,7 +237,7 @@ const C=[
  {n:'Glitch',c:9,f:()=>cycle(it=>{stage.innerHTML=`<div class="qb"><div class="q" data-t="“${esc(it.q)}”">“${esc(it.q)}”</div><div class="by">— ${esc(it.by)}</div></div>`;fitLen(fq(),it.q);},2900)},
 ];
 
-function show(i){if(cleanup)cleanup();cur=(i+C.length)%C.length;const cc=C[cur].c;stage.className='';void stage.offsetWidth;stage.className='c'+cc;document.getElementById('bg').className='bg'+cc;document.getElementById('logo').style.display=(cc===10?'none':'block');stage.innerHTML='';nameEl.textContent=(cur+1<10?'0':'')+(cur+1)+' · '+C[cur].n;cleanup=C[cur].f();}
+function show(i){if(cleanup)cleanup();cur=(i+C.length)%C.length;const cc=C[cur].c;stage.className='';void stage.offsetWidth;stage.className='c'+cc;document.getElementById('bg').className='bg'+cc;document.getElementById('logo').style.display=(cc===10?'none':'block');const pe=document.getElementById('pin');if(cc===10){pe.style.display='none';}else{pe.style.display='block';pe.src=PINS[cur%PINS.length];pe.style.animation='none';void pe.offsetWidth;pe.style.animation='';}stage.innerHTML='';nameEl.textContent=(cur+1<10?'0':'')+(cur+1)+' · '+C[cur].n;cleanup=C[cur].f();}
 function nextC(){show(cur+1);}
 function startAuto(){clearInterval(autoTimer);autoTimer=setInterval(()=>{if(!paused)nextC();},14000);}
 
