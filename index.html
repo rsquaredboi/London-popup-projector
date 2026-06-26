@@ -34,8 +34,9 @@
   .cBall{left:26px;bottom:9.5vh;width:84px}
   .cLem{right:30px;bottom:10vh;width:62px}
   /* ===== BRAND CHROME (persistent) ===== */
-  #logo{position:fixed;left:26px;top:20px;z-index:60;background:var(--cream);padding:9px 15px 7px;border-radius:16px;box-shadow:0 6px 22px rgba(0,0,0,.25)}
-  #logo img{height:30px;display:block}
+  #logo{position:fixed;left:50%;top:1.4vh;transform:translateX(-50%);z-index:60;pointer-events:none}
+  #logo img{height:8.2vh;display:block;filter:drop-shadow(2px 3px 0 rgba(42,10,30,.5)) drop-shadow(1.4px 0 0 rgba(42,10,30,.45)) drop-shadow(-1.4px 0 0 rgba(42,10,30,.45)) drop-shadow(0 1.4px 0 rgba(42,10,30,.45)) drop-shadow(0 -1.4px 0 rgba(42,10,30,.45))}
+  .c10 #logo{display:none}  /* truck slide has its own centered Nancy */
   .mascot{position:fixed;right:22px;top:14px;width:108px;height:auto;z-index:60;animation:bob 3.2s ease-in-out infinite}
   @keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-10px) rotate(4deg)}}
   /* event ticker footer */
@@ -48,7 +49,7 @@
   /* confetti motifs */
   .deco{position:fixed;z-index:2;pointer-events:none;opacity:.9}
   /* dev HUD */
-  #name{position:fixed;left:50%;top:18px;transform:translateX(-50%);color:rgba(255,255,255,.8);font-family:var(--cond);
+  #name{position:fixed;left:20px;top:16px;color:rgba(255,255,255,.8);font-family:var(--cond);
     font-size:14px;letter-spacing:.3em;text-transform:uppercase;z-index:61;mix-blend-mode:difference;transition:opacity .4s}
   #hud{position:fixed;left:0;right:0;bottom:8.4vh;text-align:center;color:rgba(0,0,0,.4);font-family:var(--cond);
     font-size:12px;letter-spacing:.2em;text-transform:uppercase;z-index:61;transition:opacity .4s}
@@ -134,22 +135,15 @@
 </style>
 </head>
 <body>
-<div id="logo"><img src="nancy-logo.png" alt="Hello Nancy"></div>
+<div id="logo"><img src="nancy-cream.png" alt="Hello Nancy"></div>
 <svg class="mascot" viewBox="0 0 140 152"></svg>
 <div id="name"></div>
 <svg class="corner cBall" viewBox="0 0 100 100"><circle cx="50" cy="50" r="49" fill="#EF5BB0"/><path d="M6 36 Q50 14 94 36" fill="none" stroke="#FBEFD8" stroke-width="3.5" stroke-linecap="round"/><path d="M6 64 Q50 86 94 64" fill="none" stroke="#FBEFD8" stroke-width="3.5" stroke-linecap="round"/></svg>
 <svg class="corner cLem" viewBox="0 0 80 70"><path d="M58 14 q14-9 22-3 q-7 12-22 9z" fill="#5FB85A"/><ellipse cx="40" cy="42" rx="30" ry="24" fill="#FCD94A" stroke="#E8B400" stroke-width="2.5"/><ellipse cx="30" cy="34" rx="8" ry="5" fill="#FFF3B0" opacity=".7"/></svg>
-<div id="bg" class="bg0"></div>
+<div id="bg" class="bg10"></div>
 <div id="stage"></div>
-<div id="hud">1–0 + T truck · ←/→ quote · space pause · F fullscreen</div>
+<div id="hud">1–9 + T truck · ←/→ quote · space pause · F fullscreen</div>
 <div id="foot"><div class="run"></div></div>
-
-<div id="intro">
-  <img class="wm" src="nancy-logo.png" alt="Nancy">
-  <div class="big">WALL OF<br>CAME</div>
-  <svg class="masc" viewBox="0 0 140 152"></svg>
-  <div class="sub">Covent Garden · June 27 · first come, first served</div>
-</div>
 
 <script>
 const MASCOT=`
@@ -206,7 +200,6 @@ const QUOTES=[
  {q:"Join the incredibly satisfied brigade.",by:"Moira A."}
 ];
 
-const NAMES=['Slam','Ticker','Split-flap','Lemon rain','Karaoke','Stickies','Neon','Ransom','Credits','Glitch','Truck'];
 ['truck-cut.png','nancy-cream.png'].forEach(s=>{const im=new Image();im.src=s;});
 const RANSOM=['#ED1E9C','#FCD94A','#fff','#2A0A1E','#C0117A'];
 const stage=document.getElementById('stage'),nameEl=document.getElementById('name');
@@ -223,36 +216,33 @@ function words(s){return s.split(' ');}
 function block(inner,by){return `<div class="qb"><div class="q">“${inner}”</div><div class="by">— ${esc(by)}</div></div>`;}
 
 const C=[
- ()=>cycle(it=>{stage.innerHTML=block(esc(it.q),it.by);fitLen(fq(),it.q);},3800),
- ()=>{const dup=QUOTES.concat(QUOTES);const row=c=>`<div class="row ${c}">${dup.map(it=>`<span>“${esc(it.q)}” — ${esc(it.by)}</span>`).join('🍋')}</div>`;stage.innerHTML=row('r0')+row('r1')+row('r2');return()=>{};},
- ()=>cycle(it=>{stage.innerHTML=block(words(it.q).map((w,i)=>`<span class="w" style="animation-delay:${i*.07}s">${esc(w)}&nbsp;</span>`).join(''),it.by);fitLen(fq(),it.q);},3000),
- ()=>{let drops='';for(let i=0;i<26;i++){drops+=`<div class="drop" style="left:${Math.random()*100}vw;animation-duration:${3+Math.random()*4}s;animation-delay:${-Math.random()*6}s">${Math.random()<.7?'🍋':(Math.random()<.5?'🫐':'🥑')}</div>`;}const c=cycle(it=>{const o=stage.querySelector('.qb');if(o)o.remove();stage.insertAdjacentHTML('beforeend',block(esc(it.q),it.by));fitLen(fq(),it.q);},3800);stage.insertAdjacentHTML('afterbegin',drops);return c;},
- ()=>{let t=[];const r=it=>{stage.innerHTML=block(words(it.q).map(w=>`<span class="w">${esc(w)}</span>`).join(' '),it.by);fitLen(fq(),it.q);stage.querySelectorAll('.q .w').forEach((w,i)=>{t.push(setTimeout(()=>w.classList.add('on'),250+i*240));});};r(QUOTES[qi]);const iv=setInterval(()=>{t.forEach(clearTimeout);t=[];qi=(qi+1)%QUOTES.length;r(QUOTES[qi]);},4000);return()=>{clearInterval(iv);t.forEach(clearTimeout);};},
- ()=>{let n=0;const tones=['#FCD94A','#FBEFD8','#FF8FC4','#fff'];const add=()=>{if(n>=18){stage.innerHTML='';n=0;}const it=QUOTES[(qi++)%QUOTES.length];const r=(Math.random()*16-8).toFixed(1);stage.insertAdjacentHTML('beforeend',`<div class="note" style="left:${Math.random()*70}vw;top:${Math.random()*60}vh;--r:${r}deg;background:${rand(tones)}">“${esc(it.q)}”<span class="nby">— ${esc(it.by)}</span></div>`);n++;};add();add();add();const id=setInterval(add,700);return()=>clearInterval(id);},
- ()=>cycle(it=>{stage.innerHTML=block(esc(it.q),it.by);fitLen(fq(),it.q);},3800),
- ()=>cycle(it=>{stage.innerHTML=block(words(it.q).map(w=>{const fs=(.78+Math.random()*.8).toFixed(2);const rot=(Math.random()*14-7).toFixed(1);const bg=rand(RANSOM);const fg=(bg==='#FCD94A'||bg==='#fff')?'#2A0A1E':'#fff';return `<span class="w" style="font-size:${fs}em;transform:rotate(${rot}deg);background:${bg};color:${fg}">${esc(w)}</span>`;}).join(''),it.by);fitLen(fq(),it.q);},2900),
- ()=>{stage.innerHTML=`<div class="scroll">${QUOTES.map(it=>`<p>“${esc(it.q)}”<span class="cby">— ${esc(it.by)}</span></p>`).join('')}</div>`;return()=>{};},
- ()=>cycle(it=>{stage.innerHTML=`<div class="qb"><div class="q" data-t="“${esc(it.q)}”">“${esc(it.q)}”</div><div class="by">— ${esc(it.by)}</div></div>`;fitLen(fq(),it.q);},2900),
- ()=>{const TT=['THE LOUDEST POP-UP IN LONDON','FIRST COME, FIRST SERVED','SAY IT LOUDER!','SHE COMES FIRST!','MILLIONS CAME. WILL YOU?','FREE TREATS · FREE MERCH','DON’T TELL YOUR NAN','WE DON’T DO QUIET','TAKES OVER REGENT’S PARK','PLEASURE, OUT LOUD'];let k=0;stage.innerHTML=`<div class="truckslide"><div class="tline">★ ${TT[0]} ★</div><img class="bigwm" src="nancy-cream.png" alt="Nancy"><div class="truckwrap"><img class="truckimg" src="truck-cut.png" alt="Nancy truck"></div></div>`;const tl=stage.querySelector('.tline');const id=setInterval(()=>{k=(k+1)%TT.length;tl.style.animation='none';void tl.offsetWidth;tl.style.animation='';tl.textContent='★ '+TT[k]+' ★';},2300);return()=>clearInterval(id);},
+ {n:'Truck',c:10,f:()=>{const TT=['THE LOUDEST POP-UP IN LONDON','FIRST COME, FIRST SERVED','SAY IT LOUDER!','SHE COMES FIRST!','MILLIONS CAME. WILL YOU?','FREE TREATS · FREE MERCH','DON’T TELL YOUR NAN','WE DON’T DO QUIET','TAKES OVER REGENT’S PARK','PLEASURE, OUT LOUD'];let k=0;stage.innerHTML=`<div class="truckslide"><div class="tline">★ ${TT[0]} ★</div><img class="bigwm" src="nancy-cream.png" alt="Nancy"><div class="truckwrap"><img class="truckimg" src="truck-cut.png" alt="Nancy truck"></div></div>`;const tl=stage.querySelector('.tline');const id=setInterval(()=>{k=(k+1)%TT.length;tl.style.animation='none';void tl.offsetWidth;tl.style.animation='';tl.textContent='★ '+TT[k]+' ★';},2300);return()=>clearInterval(id);}},
+ {n:'Slam',c:0,f:()=>cycle(it=>{stage.innerHTML=block(esc(it.q),it.by);fitLen(fq(),it.q);},3800)},
+ {n:'Split-flap',c:2,f:()=>cycle(it=>{stage.innerHTML=block(words(it.q).map((w,i)=>`<span class="w" style="animation-delay:${i*.07}s">${esc(w)}&nbsp;</span>`).join(''),it.by);fitLen(fq(),it.q);},3000)},
+ {n:'Lemon rain',c:3,f:()=>{let drops='';for(let i=0;i<26;i++){drops+=`<div class="drop" style="left:${Math.random()*100}vw;animation-duration:${3+Math.random()*4}s;animation-delay:${-Math.random()*6}s">${Math.random()<.7?'🍋':(Math.random()<.5?'🫐':'🥑')}</div>`;}const c=cycle(it=>{const o=stage.querySelector('.qb');if(o)o.remove();stage.insertAdjacentHTML('beforeend',block(esc(it.q),it.by));fitLen(fq(),it.q);},3800);stage.insertAdjacentHTML('afterbegin',drops);return c;}},
+ {n:'Karaoke',c:4,f:()=>{let t=[];const r=it=>{stage.innerHTML=block(words(it.q).map(w=>`<span class="w">${esc(w)}</span>`).join(' '),it.by);fitLen(fq(),it.q);stage.querySelectorAll('.q .w').forEach((w,i)=>{t.push(setTimeout(()=>w.classList.add('on'),250+i*240));});};r(QUOTES[qi]);const iv=setInterval(()=>{t.forEach(clearTimeout);t=[];qi=(qi+1)%QUOTES.length;r(QUOTES[qi]);},4000);return()=>{clearInterval(iv);t.forEach(clearTimeout);};}},
+ {n:'Neon',c:6,f:()=>cycle(it=>{stage.innerHTML=block(esc(it.q),it.by);fitLen(fq(),it.q);},3800)},
+ {n:'Ransom',c:7,f:()=>cycle(it=>{stage.innerHTML=block(words(it.q).map(w=>{const fs=(.78+Math.random()*.8).toFixed(2);const rot=(Math.random()*14-7).toFixed(1);const bg=rand(RANSOM);const fg=(bg==='#FCD94A'||bg==='#fff')?'#2A0A1E':'#fff';return `<span class="w" style="font-size:${fs}em;transform:rotate(${rot}deg);background:${bg};color:${fg}">${esc(w)}</span>`;}).join(''),it.by);fitLen(fq(),it.q);},2900)},
+ {n:'Credits',c:8,f:()=>{stage.innerHTML=`<div class="scroll">${QUOTES.map(it=>`<p>“${esc(it.q)}”<span class="cby">— ${esc(it.by)}</span></p>`).join('')}</div>`;return()=>{};}},
+ {n:'Glitch',c:9,f:()=>cycle(it=>{stage.innerHTML=`<div class="qb"><div class="q" data-t="“${esc(it.q)}”">“${esc(it.q)}”</div><div class="by">— ${esc(it.by)}</div></div>`;fitLen(fq(),it.q);},2900)},
 ];
 
-function show(i){if(cleanup)cleanup();cur=(i+C.length)%C.length;stage.className='';void stage.offsetWidth;stage.className='c'+cur;document.getElementById('bg').className='bg'+cur;stage.innerHTML='';nameEl.textContent=(cur+1<10?'0':'')+(cur+1)+' · '+NAMES[cur];cleanup=C[cur]();}
+function show(i){if(cleanup)cleanup();cur=(i+C.length)%C.length;const cc=C[cur].c;stage.className='';void stage.offsetWidth;stage.className='c'+cc;document.getElementById('bg').className='bg'+cc;document.getElementById('logo').style.display=(cc===10?'none':'block');stage.innerHTML='';nameEl.textContent=(cur+1<10?'0':'')+(cur+1)+' · '+C[cur].n;cleanup=C[cur].f();}
 function nextC(){show(cur+1);}
 function startAuto(){clearInterval(autoTimer);autoTimer=setInterval(()=>{if(!paused)nextC();},14000);}
 
 document.addEventListener('keydown',e=>{
-  if(e.key>='0'&&e.key<='9'){show(e.key==='0'?9:(+e.key-1));startAuto();}
+  if(e.key>='1'&&e.key<='9'){show(+e.key-1);startAuto();}
   else if(e.key==='ArrowRight'){qi=(qi+1)%QUOTES.length;show(cur);startAuto();}
   else if(e.key==='ArrowLeft'){qi=(qi-2+QUOTES.length)%QUOTES.length;show(cur);startAuto();}
   else if(e.key===' '){paused=!paused;e.preventDefault();}
-  else if(e.key.toLowerCase()==='t'){show(10);startAuto();}
+  else if(e.key.toLowerCase()==='t'){show(0);startAuto();}
   else if(e.key.toLowerCase()==='f'){if(!document.fullscreenElement)document.documentElement.requestFullscreen();else document.exitFullscreen();}
 });
 let idle;function wake(){document.body.classList.remove('idle');clearTimeout(idle);idle=setTimeout(()=>document.body.classList.add('idle'),2500);}
 document.addEventListener('mousemove',wake);document.addEventListener('keydown',wake);wake();
 
 show(0);startAuto();
-setTimeout(()=>document.getElementById('intro').classList.add('gone'),3800);
 </script>
 </body>
 </html>
