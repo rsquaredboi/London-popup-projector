@@ -32,7 +32,7 @@
   /* subtle static brand accents */
   .corner{position:fixed;z-index:2;opacity:.5;pointer-events:none}
   .cBall{left:26px;bottom:9.5vh;width:84px}
-  .cLem{right:30px;bottom:10vh;width:62px}
+  .cLem{display:none}  /* bottom-right is now the rotating pin */
   /* ===== BRAND CHROME (persistent) ===== */
   #logo{position:fixed;left:50%;top:1.4vh;transform:translateX(-50%);z-index:60;pointer-events:none}
   #logo img{height:8.2vh;display:block;filter:drop-shadow(2px 3px 0 rgba(42,10,30,.5)) drop-shadow(1.4px 0 0 rgba(42,10,30,.45)) drop-shadow(-1.4px 0 0 rgba(42,10,30,.45)) drop-shadow(0 1.4px 0 rgba(42,10,30,.45)) drop-shadow(0 -1.4px 0 rgba(42,10,30,.45))}
@@ -133,13 +133,10 @@
   @keyframes drivein{0%{transform:translateX(-118vw)}100%{transform:translateX(0)}}
   @keyframes bobtruck{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
 
-  /* ===== CENTER ROTATING PIN (Nancy x Nick) ===== */
-  #pin{position:fixed;left:50%;top:10.5vh;height:25vh;transform:translateX(-50%);z-index:5;pointer-events:none;
+  /* ===== ROTATING PIN (Nancy x Nick) — bottom right ===== */
+  #pin{position:fixed;right:2vw;bottom:8.5vh;height:23vh;z-index:5;pointer-events:none;
     filter:drop-shadow(0 10px 20px rgba(42,10,30,.45));animation:pinpop .6s cubic-bezier(.2,1.5,.35,1) both}
-  @keyframes pinpop{0%{transform:translateX(-50%) scale(.4) rotate(-14deg);opacity:0}100%{transform:translateX(-50%) scale(1) rotate(0);opacity:1}}
-  /* drop the quote into the lower half so it clears the pin (truck opts out) */
-  #stage{top:37vh}
-  #stage.c10{top:0}
+  @keyframes pinpop{0%{transform:scale(.4) rotate(-14deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
 </style>
 </head>
 <body>
