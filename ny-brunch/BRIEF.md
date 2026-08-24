@@ -43,7 +43,8 @@ PDF; **not** a free/Google font, so it needs a licensed webfont to ship on a pub
 
 ## Products
 
-**Ace** — ball-form, pink and optic yellow. **Smash** — sage wand with a ball head.
+**Ace** is the ball — pink and optic yellow. **Smash** is the sage wand.
+Get these the right way round: a frame showing only balls is Ace, not "Smash & Ace".
 Both read as tennis equipment at a glance, which is the whole gag.
 
 ## Four visual worlds in the supplied assets

@@ -38,7 +38,7 @@
   .t6 #tint{background:rgba(20,6,14,.74)}
   .t9 #tint{background:rgba(12,3,9,.78)}
   .t10 #tint{background:radial-gradient(120% 90% at 50% 22%,#F76BA4 0%,#EF538E 48%,#D9376F 100%)}
-  .t11 #tint{background:rgba(42,10,30,.14)}   /* the shoot — photography almost clean */
+  .t11 #tint{background:radial-gradient(120% 90% at 50% 40%,#F76BA4 0%,#EF538E 55%,#D9376F 100%)}
 
   #stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;
     overflow:hidden;background:transparent;z-index:3}
@@ -137,10 +137,16 @@
   @keyframes drivein{0%{transform:translateX(-118vw)}100%{transform:translateX(0)}}
   @keyframes bobunit{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
 
-  /* ===== THE SHOOT (c11) — photography with nothing over it ===== */
-  .c11 .cap{position:absolute;left:4vw;bottom:11vh;font-family:var(--cond);font-size:3vh;
-    letter-spacing:.16em;text-transform:uppercase;color:var(--cream);
-    text-shadow:0 .3vh 2vh rgba(42,10,30,.7);z-index:3}
+  /* ===== FINALE (c11) — the colourful campaign pieces and the mascots.
+     All portrait 4:5, so they are shown whole on the pink rather than cropped
+     to fill a 16:9 frame. ===== */
+  .c11 #stage{padding:9vh 4vw 11vh}
+  .c11 .plate{height:74vh;width:auto;border-radius:1.4vh;box-shadow:0 3vh 6vh rgba(42,10,30,.42);
+    animation:plate .8s cubic-bezier(.16,1,.3,1) both}
+  @keyframes plate{0%{opacity:0;transform:translateY(2.4vh) scale(.97)}100%{opacity:1;transform:none}}
+  .c11 .cap{position:absolute;left:50%;transform:translateX(-50%);bottom:8.8vh;
+    font-family:var(--cond);font-size:2.6vh;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--marigold);text-shadow:0 .3vh 2vh rgba(42,10,30,.5);z-index:4}
 
   @media (prefers-reduced-motion:reduce){
     *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;
@@ -214,7 +220,17 @@ const SHOTS = ["court-ace-corner.jpg","court-ace-wide.jpg","court-ace-pink.jpg",
                "net-smash.jpg","packaging.jpg","packaging-wide.jpg"];
 const BALLS = ["art/ball-green.svg","art/ball-pink.svg","art/ball-green2.svg"];
 
-SHOTS.forEach(s => { new Image().src = A(s); });
+// The campaign's colourful pieces, and the mascots. All portrait 4:5.
+const COLOURFUL = [
+  {f:"hero-chartreuse.jpg", c:"Smash the Quiet"},
+  {f:"hero-pink.jpg",       c:"Ace the Point"},
+  {f:"product-court.jpg",   c:"Second serves are for tennis"},
+  {f:"mascot-duo.jpg",      c:"Ace — Love, Love"},
+  {f:"mascot-trio.jpg",     c:"Smash & Ace"},
+  {f:"mascot-hero.jpg",     c:"Smash"}
+];
+
+[...SHOTS, ...COLOURFUL.map(x => x.f)].forEach(s => { new Image().src = A(s); });
 
 /* ---- HELPERS -------------------------------------------------------------- */
 const stage  = document.getElementById('stage'),
@@ -355,10 +371,17 @@ const C = [
     fitLen(fq(), SCRIPT[i]);
   }, 3400, true)},
 
-  {n:'The shoot', c:11, f:() => {
-    let k = Math.floor(Math.random() * SHOTS.length);
-    stage.innerHTML = `<div class="cap">Smash &amp; Ace</div>`;
-    const id = setInterval(() => { k++; bgPhoto(SHOTS[k % SHOTS.length]); }, 3800);
+  // The closer: the campaign's colourful pieces and the mascot cast, shown
+  // whole on the pink rather than cropped into a 16:9 ground.
+  {n:'Colourful ones', c:11, hold:22500, f:() => {
+    let k = 0;
+    const render = () => {
+      const it = COLOURFUL[k % COLOURFUL.length];
+      stage.innerHTML = `<img class="plate" src="${A(it.f)}" alt="">` +
+                        `<div class="cap">${esc(it.c)}</div>`;
+    };
+    render();
+    const id = setInterval(() => { k++; render(); }, 3400);
     return () => clearInterval(id);
   }}
 ];
@@ -377,7 +400,7 @@ function show(i){
   stage.className = ''; void stage.offsetWidth; stage.className = 'c' + cc;
   document.body.className = (document.body.classList.contains('idle') ? 'idle ' : '') + 'c' + cc + ' t' + cc;
 
-  bgPhoto(SHOTS[(cur * 5 + 3) % SHOTS.length]);
+  if (cc !== 10 && cc !== 11) bgPhoto(SHOTS[(cur * 5 + 3) % SHOTS.length]);
 
   const light = LIGHT_TINTS.includes(cc);
   logoEl.src = light ? 'art/logo-ink.png' : 'art/logo-cream.png';
@@ -395,7 +418,7 @@ function show(i){
 function nextC(){ show(cur + 1); }
 function startAuto(){
   clearInterval(autoTimer);
-  autoTimer = setInterval(() => { if (!paused) nextC(); }, 14000);
+  autoTimer = setInterval(() => { if (!paused) nextC(); }, C[cur].hold || 14000);
 }
 
 document.querySelector('#foot .run').innerHTML = (() => {
