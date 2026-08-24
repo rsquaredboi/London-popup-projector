@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smash the Quiet — Nancy NY Brunch</title>
+<style>
+  /* Fonts are self-hosted so the deck runs with no network at the venue.
+     Swap these faces for PP Editorial New when the licensed webfonts arrive. */
+    @font-face{font-family:'Archivo';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/Archivo-normal-400.woff2) format('woff2')}
+    @font-face{font-family:'Archivo';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/Archivo-normal-500.woff2) format('woff2')}
+    @font-face{font-family:'Archivo';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/Archivo-normal-600.woff2) format('woff2')}
+    @font-face{font-family:'Instrument Serif';font-style:italic;font-weight:400;font-display:swap;src:url(fonts/InstrumentSerif-italic-400.woff2) format('woff2')}
+    @font-face{font-family:'Instrument Serif';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/InstrumentSerif-normal-400.woff2) format('woff2')}
+
+  /* ===== BRAND TOKENS — sampled from the vector postcard ===== */
+  :root{
+    --pink:#EF538E; --pink-dp:#D9376F; --pink-lt:#F8A9C4;
+    --marigold:#FBC829; --sun:#FED904;
+    --chartreuse:#9CCB3B; --chartreuse-lt:#B5D564;
+    --sage:#8C9B84; --court:#4E6357; --clay:#C8794F;
+    --white:#FFFFFF; --ink:#191207;
+    --disp:'Instrument Serif',Georgia,'Times New Roman',serif;
+    --chrome:'Archivo','Helvetica Neue',Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;overflow:hidden;background:var(--ink);font-family:var(--disp);cursor:none}
+
+  /* ===== PHOTO LAYER — full-bleed, slow drift ===== */
+  #bg{position:fixed;inset:0;z-index:0;overflow:hidden;background:var(--pink)}
+  #bg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;
+    transition:opacity 1.1s ease;transform-origin:center;will-change:transform,opacity}
+  #bg img.on{opacity:1;animation:drift 19s ease-out both}
+  @keyframes drift{0%{transform:scale(1.02) translate(0,0)}100%{transform:scale(1.13) translate(-1.4%,-1%)}}
+  /* scrims keep type legible over photography without flattening the image */
+  #scrim{position:fixed;inset:0;z-index:1;pointer-events:none;transition:opacity .6s ease}
+  .sc-top #scrim{background:linear-gradient(180deg,rgba(25,18,7,.42) 0%,rgba(25,18,7,.10) 42%,transparent 66%)}
+  .sc-bot #scrim{background:linear-gradient(0deg,rgba(25,18,7,.46) 0%,rgba(25,18,7,.12) 40%,transparent 64%)}
+  .sc-full #scrim{background:rgba(25,18,7,.34)}
+  .sc-heavy #scrim{background:rgba(25,18,7,.52)}
+  .sc-none #scrim{background:none}
+
+  /* ===== RIBBON — the campaign's signature motif ===== */
+  #ribbon{position:fixed;inset:0;z-index:2;pointer-events:none;overflow:visible;opacity:0;
+    transition:opacity .7s ease}
+  #ribbon.on{opacity:1}
+  #ribbon path{fill:none;stroke-linecap:round;
+    stroke-dasharray:var(--len);stroke-dashoffset:var(--len);
+    animation:sweep 1.5s cubic-bezier(.22,.9,.28,1) forwards}
+  @keyframes sweep{to{stroke-dashoffset:0}}
+
+  /* ===== TYPE ===== */
+  #stage{position:fixed;inset:0;z-index:3;display:flex;align-items:center;justify-content:center;
+    text-align:center;overflow:hidden;padding:9vh 6vw 13vh}
+  .line{font-family:var(--disp);font-weight:400;line-height:.94;letter-spacing:-.012em;
+    color:var(--white);text-wrap:balance;
+    text-shadow:0 .18vh 2.4vh rgba(25,18,7,.34),0 .04vh .5vh rgba(25,18,7,.28)}
+  .line em{font-style:italic}
+  .kicker{font-family:var(--chrome);font-weight:600;font-size:1.85vh;letter-spacing:.34em;
+    text-transform:uppercase;color:var(--marigold);margin-bottom:3.4vh}
+  /* small type over pale court needs its own ground, not a shadow */
+  .kicker.pill{background:var(--ink);color:var(--marigold);padding:1.1vh 1.9vh;
+    border-radius:999px;margin-bottom:0}
+  .stack{display:flex;flex-direction:column;align-items:center;gap:2.6vh;max-width:88vw}
+  .tint-marigold .line{color:var(--marigold)} .tint-pink .line{color:var(--pink)}
+  .tint-ink .line{color:var(--ink);text-shadow:none} .tint-chart .line{color:var(--chartreuse)}
+
+  /* alignment variants — type sits in the photo's negative space */
+  .al-l #stage{justify-content:flex-start;text-align:left;padding-left:7vw}
+  .al-l .stack{align-items:flex-start}
+  .al-r #stage{justify-content:flex-end;text-align:right;padding-right:7vw}
+  .al-r .stack{align-items:flex-end}
+  .al-t #stage{align-items:flex-start;padding-top:11vh}
+  .al-b #stage{align-items:flex-end;padding-bottom:16vh}
+
+  /* ===== CONCEPT TREATMENTS ===== */
+  /* 1 Opener — the campaign lockup, scaling in */
+  .c-open .line{font-size:8.6vw;animation:rise .9s cubic-bezier(.16,1,.3,1) both}
+  .c-open .line:nth-child(2){animation-delay:.16s}
+  @keyframes rise{0%{opacity:0;transform:translateY(2.4vh) scale(.985)}100%{opacity:1;transform:none}}
+
+  /* 2 Serve — the postcard script, one line at a time */
+  .c-serve .line{animation:fadein 1s ease both}
+  @keyframes fadein{0%{opacity:0;transform:translateY(1.4vh)}100%{opacity:1;transform:none}}
+
+  /* 3 Rally — word-by-word reveal, like a rally building */
+  .c-rally .w{display:inline-block;opacity:0;transform:translateY(1.1vh);
+    animation:wordin .5s cubic-bezier(.16,1,.3,1) forwards}
+  @keyframes wordin{to{opacity:1;transform:none}}
+
+  /* 4 Scoreboard — split-flap */
+  .c-score .board{display:flex;gap:1.1vh;justify-content:center;flex-wrap:wrap}
+  .c-score .cell{font-family:var(--chrome);font-weight:600;font-size:6.4vh;line-height:1;
+    padding:1.5vh 1.9vh;background:var(--ink);color:var(--marigold);border-radius:.7vh;
+    min-width:7vh;text-align:center;transform-origin:50% 0;
+    animation:flap .5s cubic-bezier(.2,1.3,.35,1) both}
+  .c-score .cell.hi{background:var(--pink);color:var(--white)}
+  @keyframes flap{0%{transform:rotateX(-92deg);opacity:0}100%{transform:none;opacity:1}}
+
+  /* 5 Hero — the portrait campaign art, framed on an extended ground */
+  .c-hero #stage{padding:0}
+  .c-hero .frame{height:76vh;box-shadow:0 3vh 7vh rgba(25,18,7,.42);border-radius:.4vh;
+    animation:heroin 1.1s cubic-bezier(.16,1,.3,1) both}
+  @keyframes heroin{0%{opacity:0;transform:translateY(3.4vh) scale(.96)}100%{opacity:1;transform:none}}
+
+  /* 6 Ball rain — felt tennis balls falling */
+  .drop{position:absolute;top:-18vh;z-index:2;animation:fall linear infinite;pointer-events:none}
+  @keyframes fall{to{transform:translateY(132vh) rotate(300deg)}}
+
+  /* 7 Mascots — sticker cards, popping in */
+  .c-masc #stage{padding:7vh 4vw 12vh}
+  .c-masc .row{display:flex;gap:2.4vw;align-items:center;justify-content:center}
+  .c-masc .card{height:62vh;border-radius:1.2vh;box-shadow:0 2.4vh 5vh rgba(25,18,7,.4);
+    animation:pop .62s cubic-bezier(.2,1.5,.35,1) both}
+  .c-masc .card:nth-child(2){animation-delay:.14s} .c-masc .card:nth-child(3){animation-delay:.28s}
+  @keyframes pop{0%{opacity:0;transform:scale(.82) rotate(-3deg)}100%{opacity:1;transform:none}}
+
+  /* 8 Match point — one word, enormous */
+  .c-point .line{font-size:15vw;line-height:.86;animation:slam .55s cubic-bezier(.2,1.35,.3,1) both}
+  @keyframes slam{0%{opacity:0;transform:scale(1.9)}100%{opacity:1;transform:none}}
+
+  /* 9 Credits — the full script, scrolling */
+  .c-cred #stage{align-items:flex-start;padding:0}
+  .c-cred .scroll{position:absolute;width:100%;text-align:center;animation:up 34s linear infinite}
+  .c-cred .scroll p{font-size:6.2vh;line-height:1.16;padding:2.6vh 10vw;color:var(--white)}
+  .c-cred .scroll p:nth-child(even){color:var(--marigold)}
+  @keyframes up{0%{transform:translateY(100vh)}100%{transform:translateY(-100%)}}
+
+  /* ===== PERSISTENT CHROME ===== */
+  #mark{position:fixed;left:50%;top:2.4vh;transform:translateX(-50%);z-index:40;
+    font-family:var(--disp);font-style:italic;font-size:3.4vh;color:var(--white);
+    letter-spacing:.005em;text-shadow:0 .2vh 1.6vh rgba(25,18,7,.5);pointer-events:none}
+  .mark-ink #mark{color:var(--ink);text-shadow:none}
+  #foot{position:fixed;left:0;right:0;bottom:0;height:6.6vh;min-height:46px;z-index:40;
+    background:var(--marigold);display:flex;align-items:center;overflow:hidden}
+  #foot .run{white-space:nowrap;font-family:var(--chrome);font-weight:600;color:var(--ink);
+    font-size:2.1vh;letter-spacing:.24em;text-transform:uppercase;animation:run 46s linear infinite}
+  #foot .run span{padding:0 2.2vw}
+  @keyframes run{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+  /* dev HUD — fades out when idle */
+  #name{position:fixed;left:1.6vw;top:2.2vh;z-index:41;font-family:var(--chrome);font-size:11px;
+    letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.72);
+    mix-blend-mode:difference;transition:opacity .45s}
+  #hud{position:fixed;left:0;right:0;bottom:8vh;z-index:41;text-align:center;font-family:var(--chrome);
+    font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.5);
+    transition:opacity .45s}
+  .idle #name,.idle #hud{opacity:0}
+</style>
+</head>
+<body>
+<div id="bg"></div>
+<div id="scrim"></div>
+<svg id="ribbon" preserveAspectRatio="none"></svg>
+<div id="stage"></div>
+<div id="mark">Nancy</div>
+<div id="name"></div>
+<div id="hud">1–9 concept · ←/→ line · space pause · F fullscreen</div>
+<div id="foot"><div class="run"></div></div>
+
+<script>
+/* ============================================================================
+   NANCY — NY BRUNCH PROJECTOR
+   One page, nine concepts, auto-advancing forever. Same engine as the London
+   deck: every concept's f() renders into #stage and returns a teardown that
+   clears whatever timers it started. show() runs the previous teardown first.
+   ========================================================================== */
+
+/* ---- CONTENT --------------------------------------------------------------
+   Three independent lists. Adding a line to one does not add it anywhere else. */
+
+// The postcard script — the spine of the deck.
+const SCRIPT = [
+  "At this club, love means everything, and every point is yours to play.",
+  "Start slow. Warm up. Take the long rally.",
+  "Find the sweet spot nobody else can reach.",
+  "Play singles or mixed doubles.",
+  "Hold serve, or break it.",
+  "No faults here. No lines you can't call.",
+  "And when it's match point, take it.",
+  "Advantage, you.",
+  "Game. Set. Yours."
+];
+
+// Short lines for the big single-statement concepts.
+const SHOUTS = ["Advantage,<br><em>you.</em>", "Game.<br>Set.<br><em>Yours.</em>",
+                "Match<br><em>point.</em>", "Take<br><em>it.</em>"];
+
+// Footer ticker. TODO: venue + date once confirmed.
+const TICKER = ["Smash the Quiet", "Ace the Point", "Second serves are for tennis",
+                "With Nancy, one is enough", "Love — Love, not on our watch",
+                "Advantage, you", "Game. Set. Yours.", "NY Brunch"];
+
+/* ---- ASSETS --------------------------------------------------------------- */
+const A = p => "assets/" + p;
+// Landscape product photography — the deck's base layer.
+const COURT  = ["court-ace-corner.jpg","court-ace-pink.jpg","court-ace-yellow.jpg","court-smash.jpg"];
+const STUDIO = ["studio-ace-pink.jpg","studio-ace-yellow.jpg","studio-trio.jpg","studio-pile.jpg","studio-pile-wide.jpg"];
+const FLAT   = ["flatlay-court.jpg","flatlay-fruit.jpg","flatlay-full.jpg","racket-shadow.jpg","racket-balls.jpg","net-smash.jpg"];
+// Portrait campaign + mascot art — framed, never stretched.
+const HEROES  = ["hero-chartreuse.jpg","hero-pink.jpg","product-court.jpg"];
+const MASCOTS = ["mascot-duo.jpg","mascot-trio.jpg","mascot-hero.jpg"];
+
+[...COURT,...STUDIO,...FLAT,...HEROES,...MASCOTS].forEach(s => { new Image().src = A(s); });
+
+/* ---- HELPERS -------------------------------------------------------------- */
+const stage = document.getElementById('stage'),
+      bgEl  = document.getElementById('bg'),
+      nameEl= document.getElementById('name'),
+      ribbon= document.getElementById('ribbon');
+
+const RIBBON_COLS = ['#B5D564','#9CCB3B','#FFFFFF','#EF538E','#FBC829','#191207',
+                     '#F8A9C4','#9CCB3B','#FFFFFF','#EF538E','#B5D564','#FBC829'];
+
+let li = 0,            // current line index, shared across concepts
+    cur = 0,           // current concept
+    cleanup = null,    // previous concept's teardown
+    autoTimer = null,
+    paused = false;
+
+const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const pick = (arr,i) => arr[i % arr.length];
+
+// Size display type off character count. Crude ladder, but it holds across the
+// whole script — check any new line on the real display before trusting it.
+function fit(el, text){
+  const n = (text || '').replace(/<[^>]+>/g,'').length;
+  el.style.fontSize = (n < 16 ? 9.4 : n < 26 ? 7.6 : n < 40 ? 6.2 : n < 56 ? 5.2 : 4.4) + 'vw';
+}
+
+// Swap the background photo. Re-triggers the drift animation on every change.
+function photo(src){
+  const img = document.createElement('img');
+  img.src = A(src); img.alt = '';
+  bgEl.appendChild(img);
+  requestAnimationFrame(() => img.classList.add('on'));
+  // keep only the outgoing frame around long enough to cross-fade
+  while (bgEl.children.length > 2) bgEl.removeChild(bgEl.firstChild);
+}
+
+// The campaign's ribbon: parallel strokes along one curve, drawn on.
+function drawRibbon(flip){
+  const W = 100, H = 100, gap = 2.1;
+  ribbon.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  ribbon.innerHTML = RIBBON_COLS.map((c,i) => {
+    const y = 14 + i * gap;
+    const d = flip
+      ? `M ${W+6} ${y} C 62 ${y-4}, 46 ${y+52}, -6 ${y+34}`
+      : `M -6 ${y} C 38 ${y-4}, 54 ${y+52}, ${W+6} ${y+34}`;
+    return `<path d="${d}" stroke="${c}" stroke-width="${gap*1.02}"
+             style="--len:200;animation-delay:${i*0.035}s"/>`;
+  }).join('');
+  ribbon.classList.add('on');
+}
+function hideRibbon(){ ribbon.classList.remove('on'); ribbon.innerHTML = ''; }
+
+// A felt tennis ball, drawn rather than cut out of a photo, so it scales to
+// any projector without going soft. feTurbulence supplies the fuzz.
+function ballSVG(size, colour){
+  const id = 'f' + Math.floor(size * 97) + colour.replace('#','');
+  const dark = colour === '#EF538E' ? '#D9376F' : '#7FAE2C';
+  return `<svg width="${size}" height="${size}" viewBox="0 0 100 100">
+    <defs>
+      <filter id="${id}">
+        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" result="n"/>
+        <feDisplacementMap in="SourceGraphic" in2="n" scale="2.4"/>
+      </filter>
+      <radialGradient id="g${id}" cx="36%" cy="30%">
+        <stop offset="0%" stop-color="${colour}"/>
+        <stop offset="72%" stop-color="${colour}"/>
+        <stop offset="100%" stop-color="${dark}"/>
+      </radialGradient>
+    </defs>
+    <g filter="url(#${id})">
+      <circle cx="50" cy="50" r="47" fill="url(#g${id})"/>
+      <path d="M8 26 Q50 50 8 74" fill="none" stroke="#FFF" stroke-width="4.2" opacity=".95"/>
+      <path d="M92 26 Q50 50 92 74" fill="none" stroke="#FFF" stroke-width="4.2" opacity=".95"/>
+    </g>
+  </svg>`;
+}
+
+/* ---- CONCEPTS -------------------------------------------------------------
+   Each entry: n = HUD label, cls = body classes (treatment + scrim + align),
+   f  = render, returns a teardown. */
+
+const C = [
+
+  { n:'Opener', cls:'c-open sc-full al-c', f(){
+      photo(COURT[0]);
+      drawRibbon(false);
+      stage.innerHTML = `<div class="stack">
+        <div class="line">Smash the Quiet.</div>
+        <div class="line"><em>Ace the Point.</em></div></div>`;
+      return () => hideRibbon();
+  }},
+
+  { n:'Serve', cls:'c-serve sc-bot al-l al-b mark-ink', f(){
+      let k = 0;
+      const render = () => {
+        photo(pick(STUDIO, k));
+        const t = pick(SCRIPT, li);
+        stage.innerHTML = `<div class="stack">
+          <div class="kicker">At this club</div>
+          <div class="line">${esc(t)}</div></div>`;
+        fit(stage.querySelector('.line'), t);
+      };
+      render();
+      const id = setInterval(() => { li++; k++; render(); }, 5200);
+      return () => clearInterval(id);
+  }},
+
+  { n:'Rally', cls:'c-rally sc-full al-c', f(){
+      let k = 0;
+      const render = () => {
+        photo(pick(FLAT, k));
+        const t = pick(SCRIPT, li);
+        stage.innerHTML = `<div class="stack"><div class="line">` +
+          t.split(' ').map((w,i) =>
+            `<span class="w" style="animation-delay:${0.1 + i*0.075}s">${esc(w)}&nbsp;</span>`
+          ).join('') + `</div></div>`;
+        fit(stage.querySelector('.line'), t);
+      };
+      render();
+      const id = setInterval(() => { li++; k++; render(); }, 5000);
+      return () => clearInterval(id);
+  }},
+
+  { n:'Scoreboard', cls:'c-score sc-full al-c', f(){
+      photo('net-smash.jpg');
+      const BOARDS = [
+        [['LOVE',0],['—',0],['LOVE',0],['NOT ON OUR WATCH',1]],
+        [['GAME',0],['SET',0],['YOURS',1]],
+        [['ADV',0],['YOU',1]],
+        [['40',0],['—',0],['LOVE',0],['MATCH POINT',1]]
+      ];
+      let k = 0;
+      const render = () => {
+        stage.innerHTML = `<div class="stack"><div class="board">` +
+          BOARDS[k % BOARDS.length].map(([t,hi],i) =>
+            `<div class="cell${hi ? ' hi' : ''}" style="animation-delay:${i*0.1}s">${t}</div>`
+          ).join('') + `</div></div>`;
+      };
+      render();
+      const id = setInterval(() => { k++; render(); }, 3400);
+      return () => clearInterval(id);
+  }},
+
+  { n:'Campaign', cls:'c-hero sc-full al-c', f(){
+      let k = 0;
+      const render = () => {
+        photo(pick(COURT, k + 1));
+        stage.innerHTML = `<img class="frame" src="${A(pick(HEROES,k))}" alt="Nancy tennis campaign">`;
+      };
+      render();
+      const id = setInterval(() => { k++; render(); }, 4600);
+      return () => clearInterval(id);
+  }},
+
+  { n:'Second Serves', cls:'sc-full al-r al-t', f(){
+      photo('court-smash.jpg');
+      drawRibbon(true);
+      stage.innerHTML = `<div class="stack">
+        <div class="line" style="font-size:6.6vw">Second serves<br>are for tennis.</div>
+        <div class="kicker pill">With Nancy, one is enough</div></div>`;
+      return () => hideRibbon();
+  }},
+
+  { n:'Mascots', cls:'c-masc sc-none al-c', f(){
+      bgEl.style.background = 'var(--pink)';
+      photo('studio-pile-wide.jpg');
+      stage.innerHTML = `<div class="row">` +
+        MASCOTS.map(m => `<img class="card" src="${A(m)}" alt="Nancy mascots">`).join('') +
+        `</div>`;
+      return () => { bgEl.style.background = ''; };
+  }},
+
+  { n:'Match Point', cls:'c-point sc-full al-c tint-marigold', f(){
+      let k = 0;
+      const render = () => {
+        photo(pick(COURT, k));
+        stage.innerHTML = `<div class="stack"><div class="line">${pick(SHOUTS,k)}</div></div>`;
+      };
+      render();
+      const id = setInterval(() => { k++; render(); }, 3200);
+      return () => clearInterval(id);
+  }},
+
+  { n:'Ball Rain', cls:'sc-full al-c', f(){
+      photo('studio-ace-pink.jpg');
+      const balls = [];
+      for (let i = 0; i < 22; i++){
+        const d = document.createElement('div');
+        const size = 5 + Math.random() * 7;             // vh
+        d.className = 'drop';
+        d.style.left = (Math.random() * 100) + 'vw';
+        d.style.animationDuration = (4.2 + Math.random() * 4.4) + 's';
+        d.style.animationDelay = (-Math.random() * 7) + 's';
+        d.innerHTML = ballSVG(size * (window.innerHeight / 100),
+                              Math.random() < .5 ? '#EF538E' : '#9CCB3B');
+        stage.appendChild(d); balls.push(d);
+      }
+      const t = pick(SCRIPT, li);
+      stage.insertAdjacentHTML('beforeend',
+        `<div class="stack" style="position:relative;z-index:4">
+           <div class="line">${esc(t)}</div></div>`);
+      fit(stage.querySelector('.line'), t);
+      return () => balls.forEach(b => b.remove());
+  }},
+
+  // The one concept with no photography — a flat ground so the full script reads
+  // clean, and the loop gets a beat of rest before it starts over.
+  { n:'Credits', cls:'c-cred sc-none al-c', f(){
+      bgEl.innerHTML = '';
+      bgEl.style.background = 'var(--pink)';
+      stage.innerHTML = `<div class="scroll">` +
+        SCRIPT.map(t => `<p>${esc(t)}</p>`).join('') +
+        `<p style="color:var(--ink)"><em>Smash the Quiet. Ace the Point.</em></p></div>`;
+      return () => { bgEl.style.background = ''; };
+  }}
+];
+
+/* ---- LOOP ----------------------------------------------------------------- */
+
+function show(i){
+  if (cleanup) cleanup();
+  cur = (i + C.length) % C.length;
+  const c = C[cur];
+  document.body.className = (document.body.classList.contains('idle') ? 'idle ' : '') + c.cls;
+  stage.innerHTML = '';
+  nameEl.textContent = String(cur + 1).padStart(2,'0') + ' · ' + c.n;
+  cleanup = c.f();
+}
+
+function startAuto(){
+  clearInterval(autoTimer);
+  autoTimer = setInterval(() => { if (!paused) show(cur + 1); }, 15000);
+}
+
+document.querySelector('#foot .run').innerHTML = (() => {
+  const t = ' ★ ' + TICKER.join(' ★ ') + ' ';
+  return `<span>${t}</span><span>${t}</span>`;
+})();
+
+document.addEventListener('keydown', e => {
+  if (e.key >= '1' && e.key <= '9'){ show(+e.key - 1); startAuto(); }
+  else if (e.key === '0'){ show(9); startAuto(); }
+  else if (e.key === 'ArrowRight'){ li++; show(cur); startAuto(); }
+  else if (e.key === 'ArrowLeft'){ li = (li - 1 + SCRIPT.length) % SCRIPT.length; show(cur); startAuto(); }
+  else if (e.key === ' '){ paused = !paused; e.preventDefault(); }
+  else if (e.key.toLowerCase() === 'f'){
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  }
+});
+
+let idle;
+function wake(){
+  document.body.classList.remove('idle');
+  clearTimeout(idle);
+  idle = setTimeout(() => document.body.classList.add('idle'), 2500);
+}
+document.addEventListener('mousemove', wake);
+document.addEventListener('keydown', wake);
+wake();
+
+show(0);
+startAuto();
+</script>
+</body>
+</html>
