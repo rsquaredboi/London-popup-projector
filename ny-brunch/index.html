@@ -39,6 +39,7 @@
   .t9 #tint{background:rgba(12,3,9,.78)}
   .t10 #tint{background:radial-gradient(120% 90% at 50% 22%,#F76BA4 0%,#EF538E 48%,#D9376F 100%)}
   .t11 #tint{background:radial-gradient(120% 90% at 50% 40%,#F76BA4 0%,#EF538E 55%,#D9376F 100%)}
+  .t12 #tint{background:rgba(42,10,30,.12)}   /* the shoot — photography almost clean */
 
   #stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;
     overflow:hidden;background:transparent;z-index:3}
@@ -51,12 +52,19 @@
   #logo{position:fixed;left:50%;top:1.8vh;transform:translateX(-50%);z-index:60;pointer-events:none}
   #logo img{height:14vh;display:block;filter:drop-shadow(0 .5vh 1.6vh rgba(42,10,30,.34))}
   .c10 #logo{display:none}  /* the opener carries its own centred lockup */
-  .mascot{position:fixed;right:26px;bottom:10.5vh;width:104px;height:auto;z-index:6;
+  .mascot{position:fixed;right:22px;top:14px;width:104px;height:auto;z-index:6;
     animation:bob 3.2s ease-in-out infinite;filter:drop-shadow(0 .8vh 1.8vh rgba(42,10,30,.4))}
   @keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-10px) rotate(4deg)}}
   .corner{position:fixed;z-index:6;pointer-events:none;filter:drop-shadow(0 .8vh 1.8vh rgba(42,10,30,.4))}
   .cBall{left:26px;bottom:10vh;width:88px}
+  /* the slot the original gives its rotating pin */
+  #wandProp{position:fixed;right:2.6vw;bottom:9vh;height:23vh;z-index:6;pointer-events:none;
+    filter:drop-shadow(0 1vh 2.2vh rgba(42,10,30,.45));
+    animation:pinpop .6s cubic-bezier(.2,1.5,.35,1) both}
+  @keyframes pinpop{0%{transform:scale(.4) rotate(-10deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
+  .c10 #wandProp,.c11 #wandProp{display:none}
   .c11 .mascot,.c11 .corner{display:none}
+  .c12 .mascot,.c12 .corner,.c12 #wandProp{display:none}
 
   #foot{position:fixed;left:0;right:0;bottom:0;height:7.2vh;min-height:52px;background:var(--marigold);z-index:60;
     display:flex;align-items:center;overflow:hidden;border-top:3px solid var(--cream)}
@@ -161,8 +169,9 @@
 <img class="mascot" src="art/ball-green.svg" alt="">
 <div id="name"></div>
 <img class="corner cBall" src="art/ball-pink.svg" alt="">
+<img id="wandProp" src="art/wand.svg" alt="">
 <div id="stage"></div>
-<div id="hud">1–9 + 0 · T opener · S shoot · ←/→ line · space pause · F fullscreen</div>
+<div id="hud">1–9 + 0 · T opener · S shoot · C closer · ←/→ line · space pause · F fullscreen</div>
 <div id="foot"><div class="run"></div></div>
 
 <script>
@@ -371,6 +380,14 @@ const C = [
     fitLen(fq(), SCRIPT[i]);
   }, 3400, true)},
 
+  {n:'The shoot', c:12, f:() => {
+    let k = Math.floor(Math.random() * SHOTS.length);
+    bgPhoto(SHOTS[k % SHOTS.length]);
+    stage.innerHTML = '';
+    const id = setInterval(() => { k++; bgPhoto(SHOTS[k % SHOTS.length]); }, 3800);
+    return () => clearInterval(id);
+  }},
+
   // The closer: the campaign's colourful pieces and the mascot cast, shown
   // whole on the pink rather than cropped into a 16:9 ground.
   {n:'Colourful ones', c:11, hold:22500, f:() => {
@@ -400,7 +417,7 @@ function show(i){
   stage.className = ''; void stage.offsetWidth; stage.className = 'c' + cc;
   document.body.className = (document.body.classList.contains('idle') ? 'idle ' : '') + 'c' + cc + ' t' + cc;
 
-  if (cc !== 10 && cc !== 11) bgPhoto(SHOTS[(cur * 5 + 3) % SHOTS.length]);
+  if (cc !== 10 && cc !== 11 && cc !== 12) bgPhoto(SHOTS[(cur * 5 + 3) % SHOTS.length]);
 
   const light = LIGHT_TINTS.includes(cc);
   logoEl.src = light ? 'art/logo-ink.png' : 'art/logo-cream.png';
@@ -430,6 +447,7 @@ document.addEventListener('keydown', e => {
   if (e.key >= '1' && e.key <= '9'){ show(+e.key - 1); startAuto(); }
   else if (e.key === '0'){ show(9); startAuto(); }
   else if (e.key.toLowerCase() === 's'){ show(10); startAuto(); }
+  else if (e.key.toLowerCase() === 'c'){ show(11); startAuto(); }
   else if (e.key === 'ArrowRight'){ li = (li + 1) % SCRIPT.length; show(cur); startAuto(); }
   else if (e.key === 'ArrowLeft'){ li = (li - 2 + SCRIPT.length) % SCRIPT.length; show(cur); startAuto(); }
   else if (e.key === ' '){ paused = !paused; e.preventDefault(); }
