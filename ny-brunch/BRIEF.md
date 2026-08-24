@@ -41,18 +41,28 @@ Campaign sets in **PP Editorial New** (Pangram Pangram) — Ultralight for displ
 Regular for body, Ultrabold for the small caps/URLs. Embedded as a subset in the postcard
 PDF; **not** a free/Google font, so it needs a licensed webfont to ship on a public page.
 
-## Three visual worlds in the supplied assets
+## Products
 
-1. **Campaign hero** — photoreal court, textured ball, multicolour ribbon swoosh
+**Ace** — ball-form, pink and optic yellow. **Smash** — sage wand with a ball head.
+Both read as tennis equipment at a glance, which is the whole gag.
+
+## Four visual worlds in the supplied assets
+
+1. **Product photography** (46 frames in Drive `Edits/`, 16 curated here) — editorial,
+   landscape, generous negative space. Four sub-looks: painted court corners, pink studio
+   seamless, court flatlays, and net/racket detail. **This is the deck's backbone** — it's
+   the only material that is natively landscape and leaves room for type.
+2. **Campaign hero** — photoreal court, textured ball, multicolour ribbon swoosh
    (`hero-chartreuse.jpg`, `hero-pink.jpg`)
-2. **Product on court** — wand with ball head, ribbon trail (`product-court.jpg`)
-3. **Mascot / kawaii** — painted ball characters, palm-lined court, sticker outlines
+3. **Product on court** — wand with ball head, ribbon trail (`product-court.jpg`)
+4. **Mascot / kawaii** — painted ball characters, palm-lined court, sticker outlines
    (`mascot-duo.jpg`, `mascot-trio.jpg`, `mascot-hero.jpg`)
 
 ## Known constraints
 
-- **Every supplied asset is portrait** (4:5 — 1632×2048 and 1080×1350). The projector is
-  16:9 landscape. Full-bleed use means cropping away the composition, so these are staged
-  as framed elements with extended grounds rather than backgrounds.
-- Assets here are optimised (JPEG q88, max 2048px) for projector playback. Originals stay
-  in Drive.
+- **The campaign and mascot art is portrait** (4:5 — 1632×2048 and 1080×1350) against a
+  16:9 projector. Full-bleed use would crop away the composition, so those are staged as
+  framed elements with extended grounds. The product photography is landscape (3:2) and
+  full-bleeds cleanly.
+- Assets here are optimised for projector playback (JPEG, max 2560px landscape / 2048px
+  portrait). Originals stay in Drive.
