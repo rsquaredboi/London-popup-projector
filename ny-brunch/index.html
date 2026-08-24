@@ -39,15 +39,14 @@
   .prop{position:fixed;z-index:2;pointer-events:none;transition:opacity .7s ease,transform .9s cubic-bezier(.2,.9,.3,1)}
   .prop img{display:block;width:100%;height:auto}
   #pBallPink {right:-3.5vw;  top:-4vh;   width:26vh}
-  #pBallGreen{right:6vw;     bottom:20vh;width:23vh}
-  #pWand     {right:2.6vw;   bottom:-14vh;width:15vh;transform-origin:50% 0}
+  #pWandUnit {right:4.2vw;   bottom:-9vh; width:23vh}
   #pBallLeft {left:-4vw;     bottom:9vh; width:24vh}
   #pBadge    {left:3.2vw;    top:4.6vh;  width:5.6vh}
-  #pMark     {left:3.2vw;    bottom:8.4vh; width:19vh}
+  #pMark     {left:11.5vw;   bottom:8.4vh; width:19vh}
   .hide-props .prop:not(#pBadge){opacity:0}
   .no-mark #pMark{opacity:0}
   @keyframes bob{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-1.6vh) rotate(3deg)}}
-  #pBallGreen,#pBallLeft{animation:bob 7s ease-in-out infinite}
+  #pWandUnit,#pBallLeft{animation:bob 7s ease-in-out infinite}
   #pBallPink{animation:bob 9s ease-in-out infinite reverse}
 
   /* ===== TYPE ===== */
@@ -144,8 +143,7 @@
 <div id="photo"></div>
 
 <img class="prop" id="pBallPink"  src="art/ball-pink.svg"   alt="">
-<img class="prop" id="pBallGreen" src="art/ball-green.svg"  alt="">
-<img class="prop" id="pWand"      src="art/wand.svg"        alt="">
+<img class="prop" id="pWandUnit"  src="art/wand-unit.svg"  alt="">
 <img class="prop" id="pBallLeft"  src="art/ball-green2.svg" alt="">
 <img class="prop" id="pBadge"     src="art/badge.svg"       alt="">
 <img class="prop" id="pMark"      src="art/wordmark.svg"    alt="Nancy">
@@ -187,11 +185,18 @@ const TICKER = ["Smash the Quiet", "Ace the Point", "Second serves are for tenni
                 "Advantage, you", "Game. Set. Yours.", "NY Brunch"];
 
 const A = p => "assets/" + p;
-const SHOTS   = ["court-ace-corner.jpg","studio-ace-pink.jpg","court-ace-pink.jpg",
-                 "studio-trio.jpg","flatlay-court.jpg","racket-balls.jpg"];
+// The shoot, landscape frames — these full-bleed on a 16:9 projector.
+const SHOTS = ["court-ace-corner.jpg","court-ace-wide.jpg","court-ace-pink.jpg","court-ace-yellow.jpg",
+               "court-smash.jpg","court-smash-wide.jpg","studio-ace-pink.jpg","studio-ace-solo.jpg",
+               "studio-ace-yellow.jpg","studio-ball-yellow.jpg","studio-trio.jpg","studio-pile.jpg",
+               "studio-pile-wide.jpg","flatlay-court.jpg","flatlay-fruit.jpg","flatlay-full.jpg",
+               "flatlay-spread.jpg","racket-shadow.jpg","racket-balls.jpg","racket-flatlay.jpg",
+               "net-smash.jpg","packaging.jpg","packaging-wide.jpg"];
+// Portrait frames — shown as cards, never stretched to fill.
+const STRIP = ["court-ace-tight.jpg","court-duo.jpg","flatlay-pair.jpg","studio-row.jpg","net-detail.jpg"];
 const HEROES  = ["hero-chartreuse.jpg","hero-pink.jpg","product-court.jpg"];
 const MASCOTS = ["mascot-duo.jpg","mascot-trio.jpg","mascot-hero.jpg"];
-[...SHOTS,...HEROES,...MASCOTS].forEach(s => { new Image().src = A(s); });
+[...SHOTS,...STRIP,...HEROES,...MASCOTS].forEach(s => { new Image().src = A(s); });
 
 const stage  = document.getElementById('stage'),
       photo  = document.getElementById('photo'),
@@ -208,7 +213,9 @@ function fit(el, text){
 }
 
 // Photography is opt-in per concept — the pink ground is the default state.
+let photoWipe = null;
 function showPhoto(src){
+  clearTimeout(photoWipe);            // a pending clear would wipe this image mid-fade
   photo.classList.add('on');
   const img = document.createElement('img');
   img.src = A(src); img.alt = '';
@@ -216,7 +223,11 @@ function showPhoto(src){
   requestAnimationFrame(() => img.classList.add('on'));
   while (photo.children.length > 2) photo.removeChild(photo.firstChild);
 }
-function clearPhoto(){ photo.classList.remove('on'); setTimeout(() => { photo.innerHTML = ''; }, 900); }
+function clearPhoto(){
+  photo.classList.remove('on');
+  clearTimeout(photoWipe);
+  photoWipe = setTimeout(() => { photo.innerHTML = ''; }, 900);
+}
 
 const MARK = '<span class="mk"><img src="art/wordmark.svg" alt="Nancy"></span>';
 
@@ -238,19 +249,6 @@ const C = [
           SCRIPT.map((t,i) => `<p style="animation-delay:${.45 + i*.26}s"${i === SCRIPT.length-1 ? ' class="last"' : ''}>${esc(t)}</p>`).join('') +
         `</div></div>`;
       return () => {};
-  }},
-
-  { n:'Serve', cls:'c-fade al-l', f(){
-      const render = () => {
-        const t = pick(SCRIPT, li);
-        stage.innerHTML = `<div class="stack">
-          <div class="kicker">At this club</div>
-          <div class="line">${esc(t)}</div></div>`;
-        fit(stage.querySelector('.line'), t);
-      };
-      render();
-      const id = setInterval(() => { li++; render(); }, 5000);
-      return () => clearInterval(id);
   }},
 
   { n:'Rally', cls:'c-rally', f(){
@@ -317,20 +315,42 @@ const C = [
 
   // The one place photography takes the whole frame, uninterrupted by type.
   { n:'The Shoot', cls:'c-shots hide-props on-photo', f(){
-      let k = 0;
+      let k = Math.floor(Math.random() * SHOTS.length);   // start somewhere new each loop
       const render = () => {
         showPhoto(pick(SHOTS, k));
         stage.innerHTML = `<div class="cap">Smash &amp; Ace</div>`;
       };
       render();
-      const id = setInterval(() => { k++; render(); }, 4200);
+      const id = setInterval(() => { k++; render(); }, 3800);
       return () => { clearInterval(id); clearPhoto(); };
   }},
 
-  { n:'Mascots', cls:'c-masc hide-props no-mark', f(){
-      stage.innerHTML = `<div class="row">` +
-        MASCOTS.map(m => `<img class="card" src="${A(m)}" alt="Nancy mascots">`).join('') + `</div>`;
-      return () => {};
+  // Photography over the pink world's rules: white type, one script line, no props.
+  { n:'On Court', cls:'c-fade hide-props on-photo no-mark al-l', f(){
+      let k = 0;
+      const render = () => {
+        showPhoto(pick(SHOTS, k * 3 + 1));
+        const t = pick(SCRIPT, li);
+        stage.innerHTML = `<div class="stack"><div class="line">${esc(t)}</div></div>`;
+        fit(stage.querySelector('.line'), t);
+      };
+      render();
+      const id = setInterval(() => { li++; k++; render(); }, 5000);
+      return () => { clearInterval(id); clearPhoto(); };
+  }},
+
+  // Portrait frames the projector can't full-bleed — the shoot's uprights and
+  // the mascot art — shown as cards on the pink ground instead of stretched.
+  { n:'The Strip', cls:'c-masc hide-props no-mark', f(){
+      const SETS = [STRIP.slice(0,3), MASCOTS, STRIP.slice(2,5)];
+      let k = 0;
+      const render = () => {
+        stage.innerHTML = `<div class="row">` +
+          SETS[k % SETS.length].map(m => `<img class="card" src="${A(m)}" alt="">`).join('') + `</div>`;
+      };
+      render();
+      const id = setInterval(() => { k++; render(); }, 4600);
+      return () => clearInterval(id);
   }},
 
   { n:'Credits', cls:'c-cred no-mark', f(){

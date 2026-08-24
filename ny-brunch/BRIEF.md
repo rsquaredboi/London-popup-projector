@@ -48,10 +48,10 @@ Both read as tennis equipment at a glance, which is the whole gag.
 
 ## Four visual worlds in the supplied assets
 
-1. **Product photography** (46 frames in Drive `Edits/`, 16 curated here) — editorial,
-   landscape, generous negative space. Four sub-looks: painted court corners, pink studio
-   seamless, court flatlays, and net/racket detail. **This is the deck's backbone** — it's
-   the only material that is natively landscape and leaves room for type.
+1. **Product photography** (46 frames in Drive `Edits/`, 28 curated here — 23 landscape,
+   5 portrait) — editorial, generous negative space. Four sub-looks: painted court
+   corners, pink studio seamless, court flatlays, and net/racket detail. The landscape
+   frames full-bleed on a 16:9 projector; the portrait ones are shown as cards.
 2. **Campaign hero** — photoreal court, textured ball, multicolour ribbon swoosh
    (`hero-chartreuse.jpg`, `hero-pink.jpg`)
 3. **Product on court** — wand with ball head, ribbon trail (`product-court.jpg`)
