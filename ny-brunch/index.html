@@ -136,9 +136,9 @@
     text-shadow:3px 4px 0 var(--ink);animation:tlinein .5s cubic-bezier(.2,1.5,.35,1) both}
   .c10 .bigwm{height:22vh;margin-top:.4vh;filter:drop-shadow(0 1vh 2.4vh rgba(42,10,30,.42));
     animation:wmpin .6s cubic-bezier(.2,1.5,.35,1) both}
-  .c10 .unitwrap{position:absolute;left:0;right:0;bottom:7.6vh;display:flex;justify-content:center;
+  .c10 .unitwrap{position:absolute;left:0;right:0;bottom:7.8vh;display:flex;justify-content:center;
     animation:drivein 1.05s cubic-bezier(.18,.85,.2,1) both}
-  .c10 .unitimg{height:46vh;filter:drop-shadow(0 16px 26px rgba(42,10,30,.4));
+  .c10 .unitimg{height:56vh;filter:drop-shadow(0 16px 26px rgba(42,10,30,.4));
     animation:bobunit 3.6s ease-in-out infinite}
   @keyframes tlinein{0%{transform:translateY(-26px) scale(.82);opacity:0}100%{transform:none;opacity:1}}
   @keyframes wmpin{0%{transform:scale(.55) rotate(-5deg);opacity:0}100%{transform:none;opacity:1}}
@@ -292,7 +292,7 @@ const C = [
     stage.innerHTML = `<div class="openslide">
       <div class="tline">★ ${TAGS[0]} ★</div>
       <img class="bigwm" src="art/logo-cream.png" alt="Nancy">
-      <div class="unitwrap"><img class="unitimg" src="art/wand-unit.svg" alt=""></div></div>`;
+      <div class="unitwrap"><img class="unitimg" src="art/smash-ace-hero.png" alt="Smash and Ace"></div></div>`;
     const tl = stage.querySelector('.tline');
     const id = setInterval(() => {
       k = (k + 1) % TAGS.length;
